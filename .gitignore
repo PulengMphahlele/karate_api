@@ -110,4 +110,4 @@ api-testing.iml
 src/main/
 /.idea/
 .idea/vcs.xml
-src/test/java/features/testcases/
+/target/
