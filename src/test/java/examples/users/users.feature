@@ -1,55 +1,20 @@
-Feature: sample karate test script    
-    If you are using Eclipse, install the free Cucumber-Eclipse plugin from
-    https://cucumber.io/cucumber-eclipse/
-    Then you will see syntax-coloring for this file. But best of all,
-    you will be able to right-click within this file and [Run As -> Cucumber Feature].
-    If you see warnings like "does not have a matching glue code",
-    go to the Eclipse preferences, find the 'Cucumber User Settings'
-    and enter the following Root Package Name: com.intuit.karate    
-    Refer to the Cucumber-Eclipse wiki for more: http://bit.ly/2mDaXeV
+Feature: sample karate test script
 
 Background:
-* url 'https://jsonplaceholder.typicode.com'
+* configure ssl = true
 
-Scenario: get all users and then get the first user by id
+Scenario: Valid GET endpoint
 
-Given path 'users'
-When method get
+Given url 'https://jsonplaceholder.typicode.com/todos/1'
+When method GET
 Then status 200
+And match response.title =='delectus aut autem'
 
-* def first = response[0]
+Scenario: Valid Post endpoint
 
-Given path 'users', first.id
-When method get
-Then status 200
-
-Scenario: create a user and then get it by id
-
-* def user =
-"""
-{
-  "name": "Test User",
-  "username": "testuser",
-  "email": "test@user.com",
-  "address": {
-    "street": "Has No Name",
-    "suite": "Apt. 123",
-    "city": "Electri",
-    "zipcode": "54321-6789"
-  }
-}
-"""
-
-Given url 'https://jsonplaceholder.typicode.com/users'
-And request user
-When method post
+Given url 'https://jsonplaceholder.typicode.com/posts'
+And request {"title": "foo", "body": "bar", "userId": 1}
+When method POST
 Then status 201
-
-* def id = response.id
-* print 'created id is: ' + id
-
-Given path id
-# When method get
-# Then status 200
-# And match response contains user
-
+And match response.title =='foo'
+And def resp = response
